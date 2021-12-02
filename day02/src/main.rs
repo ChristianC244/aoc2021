@@ -9,8 +9,8 @@ fn main() {
     let re = Regex::new(r"(\w+) (\d+)")
     .expect("Regex Init Error");
 
-    let vec : Vec<(String, u32)> = re.captures_iter(&input)
-        .map(|x| (x[1].to_string(), x[2].parse::<u32>().unwrap()))
+    let vec : Vec<(String, i32)> = re.captures_iter(&input)
+        .map(|x| (x[1].to_string(), x[2].parse::<i32>().unwrap()))
         .collect();
 
     part_one(&vec);
@@ -18,7 +18,7 @@ fn main() {
 
 }
 
-fn part_one(vec: &Vec<(String,u32)> ) {
+fn part_one(vec: &Vec<(String,i32)> ) {
 
     let mut coord = (0,0);
 
@@ -34,7 +34,7 @@ fn part_one(vec: &Vec<(String,u32)> ) {
     println!("PART ONE\nResult: {}", coord.0*coord.1)
 }
 
-fn part_two(vec: &Vec<(String, u32)>) {
+fn part_two(vec: &Vec<(String, i32)>) {
     let mut coord = (0,0);
     let mut aim = 0;
 
