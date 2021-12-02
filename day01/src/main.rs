@@ -25,13 +25,6 @@ fn count_increases(data: &Vec<u16>) -> usize {
 
 }
 
-fn windows_vector(v: &Vec<u16>) -> Vec<u16> {
-    v.windows(3)
-        .map(|x| x[0] + x[1] + x[2])
-        .collect()
-
-}
-
 fn part_one(v: &Vec<u16>){
 
     print!("PART ONE\n# increases: {}\n", count_increases(&v));
@@ -39,6 +32,9 @@ fn part_one(v: &Vec<u16>){
 
 fn part_two(v: &Vec<u16>){
  
-    let v3: Vec<u16> = windows_vector(&v);
+    let v3: Vec<u16> = v.windows(3)
+        .map(|x| x[0] + x[1] + x[2])
+        .collect();
+
     print!("PART TWO\n# increases: {}\n", count_increases(&v3));
 }
