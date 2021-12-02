@@ -19,33 +19,29 @@ fn main() {
 }
 
 fn part_one(vec: &Vec<(String,i32)> ) {
-
-    let mut coord = (0,0);
-
-    for cmd in vec.iter() {
+    
+    let coord = vec.iter().fold((0,0), |acc:(i32, i32), cmd| {
         match cmd.0.as_str() {
-            "forward" => coord = (coord.0 + cmd.1, coord.1),
-            "up" => coord = (coord.0, coord.1 - cmd.1),
-            "down" => coord = (coord.0, coord.1 + cmd.1),
-            _ => return, 
-        }
-    }
+            "forward" => (acc.0 + cmd.1, acc.1),
+            "up" => (acc.0, acc.1 - cmd.1),
+            "down" => (acc.0, acc.1 + cmd.1),
+            _ => unreachable!(), 
+            }
+        });
 
     println!("PART ONE\nResult: {}", coord.0*coord.1)
 }
 
 fn part_two(vec: &Vec<(String, i32)>) {
-    let mut coord = (0,0);
-    let mut aim = 0;
 
-    for cmd in vec.iter() {
+    let coord = vec.iter().fold((0,0,0), |(x,y,aim), cmd| {
         match cmd.0.as_str() {
-            "forward" => coord = (coord.0 + cmd.1, coord.1 + aim*cmd.1),
-            "up" => aim -= cmd.1,
-            "down" => aim += cmd.1,
-            _ => return, 
+            "forward" => (x+cmd.1, y+aim*cmd.1, aim),
+            "up" => (x, y,aim - cmd.1),
+            "down" => (x, y, aim + cmd.1),
+            _ => unreachable!() 
         }
-    }
+    });
 
     println!("PART TWO\nResult: {}", coord.0*coord.1)
 }
