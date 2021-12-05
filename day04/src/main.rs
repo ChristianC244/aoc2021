@@ -6,7 +6,7 @@ use regex::Regex;
 
 type Matrix = Vec<Vec<bool>>;
 
-#[derive(Debug)]
+#[derive(Clone)]
 struct Card {
     numbers: HashMap<usize, (usize,usize)>,
     grid: Matrix,
@@ -30,7 +30,8 @@ fn main() {
         cards.push(str_to_card(&input[i]))
     }
 
-    part_one(&calls, &mut cards);
+    part_one(&calls, &mut cards.clone());
+    part_two(&calls, &mut cards);
     
 
 }
@@ -61,7 +62,6 @@ fn str_to_card(input: &str)  -> Card{
 
 } 
 
-
 fn check_call(n: &usize, card: &mut Card) -> bool{
     // True if win
     if !card.numbers.contains_key(&n) {return false};
@@ -91,6 +91,19 @@ fn check_win(x: &usize, y: &usize, card: &Card) -> bool{
 
 }
 
+fn print_result(card: &Card, win_card:usize ) {
+    let res = card.numbers.iter()
+    // Calculate sum of remaining numbers
+    .fold(0,| mut acc, (k, (x,y)) | 
+        {
+            if card.grid[*x][*y]==false { acc += k}
+            acc
+        }
+    );
+
+    println!("{}",res*win_card);
+}
+
 fn part_one(calls: &Vec<usize>, cards: &mut Vec<Card>) {
     let mut winner:isize = -1;
     let mut win_card= 0;
@@ -107,16 +120,34 @@ fn part_one(calls: &Vec<usize>, cards: &mut Vec<Card>) {
 
     assert_ne!(winner,-1);
 
-    let winner:usize = winner as usize;
+    print_result(&cards[winner as usize], win_card)
+    
+}
 
-    let res = cards[winner].numbers.iter()
-    // Calculate sum
-    .fold(0,| mut acc, (k, (x,y)) | 
-        {
-            if cards[winner].grid[*x][*y]==false { acc += k}
-            acc
+fn part_two(calls: &Vec<usize>, cards: &mut Vec<Card>){
+
+    let mut track_cards = vec![false; cards.len()];
+
+    let mut last: isize = -1;
+    let mut last_card: isize = -1;
+
+    for n in calls {
+        for (i,c) in cards.iter_mut().enumerate() {
+            if check_call(n, c) {
+                track_cards[i] = true;
+
+                if track_cards.iter().filter(|x| **x == false).count() == 0 
+                {
+                    last = i as isize;
+                    last_card = *n as isize;
+                    break;
+                } 
+            }
         }
-    );
+        if last != -1 {break;}
+    }
 
-    println!("{}",res*win_card);
+    dbg!(last_card);
+    print_result(&cards[last as usize], last_card as usize);
+
 }
