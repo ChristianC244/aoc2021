@@ -30,32 +30,8 @@ fn main() {
         cards.push(str_to_card(&input[i]))
     }
 
-    let mut winner:isize = -1;
-    let mut win_card= 0;
-    for n in calls {
-        for (i, c) in cards.iter_mut().enumerate() {
-            if check_call(&n,  c) {
-                winner = i as isize;
-                win_card = n;
-                break;
-            }
-        }
-        if winner != -1 {break;}
-    }
-
-    assert_ne!(winner,-1);
-
-    let winner:usize = winner as usize;
-
-    let res = cards[winner].numbers.iter()
-    .fold(0,| mut acc, (k, (x,y)) | 
-        {
-            if cards[winner].grid[*x][*y]==false { acc += k}
-            acc
-        }
-    );
-
-    println!("{}",res*win_card);
+    part_one(&calls, &mut cards);
+    
 
 }
 
@@ -113,4 +89,34 @@ fn check_win(x: &usize, y: &usize, card: &Card) -> bool{
     
     false
 
+}
+
+fn part_one(calls: &Vec<usize>, cards: &mut Vec<Card>) {
+    let mut winner:isize = -1;
+    let mut win_card= 0;
+    for n in calls {
+        for (i, c) in cards.iter_mut().enumerate() {
+            if check_call(&n,  c) {
+                winner = i as isize;
+                win_card = *n;
+                break;
+            }
+        }
+        if winner != -1 {break;}
+    }
+
+    assert_ne!(winner,-1);
+
+    let winner:usize = winner as usize;
+
+    let res = cards[winner].numbers.iter()
+    // Calculate sum
+    .fold(0,| mut acc, (k, (x,y)) | 
+        {
+            if cards[winner].grid[*x][*y]==false { acc += k}
+            acc
+        }
+    );
+
+    println!("{}",res*win_card);
 }
