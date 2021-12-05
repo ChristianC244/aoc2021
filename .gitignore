@@ -5,3 +5,6 @@
 # VS Code
 */.vscode
 
+# AoC
+*/test.txt
+
