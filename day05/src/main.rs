@@ -14,16 +14,7 @@ impl Coord {
             start: (x1, y1),
             end: (x2, y2)
         }
-    }
-    // pub fn is_ordered(&self) -> bool {
-    //     let (x1, y1) = self.start;
-    //     let (x2, y2) = self.end;
-
-    //     if y1 < y2 { return true}
-    //     else if y1 == y2 {return x1 < x2}
-    //     false
-    // }
-    
+    }   
 }
 
 struct  VentMap {
@@ -39,7 +30,6 @@ impl VentMap {
 
     pub fn add_fissure_one(&mut self, coord: &Coord)  {
         // Given a Coord it creates the map, in case of entry already present increase it's value by 1; 
-        // Returns the Lenght of the fissure or None
         let (mut x1, mut y1) = coord.start;
         let (mut x2, mut y2) = coord.end;
 
