@@ -4,22 +4,30 @@ use regex::Regex;
 
 #[derive(Clone)]
 struct  Coord {
-    pub start: (usize, usize),
-    pub end: (usize, usize),
+    pub start: (i32, i32),
+    pub end: (i32, i32),
 }
 impl Coord {
 
-    pub fn new(x1: usize, y1: usize, x2: usize, y2: usize) -> Self{
+    pub fn new(x1: i32, y1: i32, x2: i32, y2: i32) -> Self{
         Self {
             start: (x1, y1),
             end: (x2, y2)
         }
     }
+    // pub fn is_ordered(&self) -> bool {
+    //     let (x1, y1) = self.start;
+    //     let (x2, y2) = self.end;
+
+    //     if y1 < y2 { return true}
+    //     else if y1 == y2 {return x1 < x2}
+    //     false
+    // }
     
 }
 
 struct  VentMap {
-    map: HashMap<(usize, usize), usize>,
+    map: HashMap<(i32, i32), i32>,
 }
 impl VentMap {
 
@@ -29,7 +37,7 @@ impl VentMap {
         }
     }
 
-    pub fn add_fissure(&mut self, coord: &Coord)  {
+    pub fn add_fissure_one(&mut self, coord: &Coord)  {
         // Given a Coord it creates the map, in case of entry already present increase it's value by 1; 
         // Returns the Lenght of the fissure or None
         let (mut x1, mut y1) = coord.start;
@@ -58,22 +66,41 @@ impl VentMap {
             for x in x1..x2+1 {
                 self.add(x, y1);
             }
-
         }
-
     }
 
-    fn add(&mut self, x: usize, y: usize) {
+    pub fn add_fissure_two(&mut self, coord: &Coord) {
+        let (mut x1, mut y1) = coord.start;
+        let (x2,  y2) = coord.end;
+
+        if x1 == x2 || y1 == y2 {self.add_fissure_one(coord)}
+        else {
+            // Move diagonally
+            let mut delta_x: i32 = x2 - x1;
+            delta_x = delta_x / delta_x.abs();
+
+            let mut delta_y: i32 = y2 - y1;
+            delta_y = delta_y / delta_y.abs();
+
+            self.add(x1, y1);
+            while x1 != x2 {
+                x1 += delta_x;
+                y1 += delta_y;
+
+                self.add(x1, y1);
+            }
+        }
+    }
+
+    fn add(&mut self, x: i32, y: i32) {
         *self.map.entry((x, y)).or_insert(0) += 1;
     }
 
     pub fn print_result(&self) {
         // dbg!(&self.map);
-        let res = self.map.iter().filter(| ((_, _), n) | **n > 1usize ).count();
+        let res = self.map.iter().filter(| ((_, _), n) | **n > 1i32 ).count();
         println!("Final result: {}", res);
-    }
-
-    
+    }   
 }
 
 fn main() {
@@ -84,10 +111,10 @@ fn main() {
     let input: Vec<Coord> = re.captures_iter(&buf)
         .map(|x| {
             
-            let x1 = x[1].parse::<usize>().unwrap();
-            let y1 = x[2].parse::<usize>().unwrap();
-            let x2 = x[3].parse::<usize>().unwrap();
-            let y2 = x[4].parse::<usize>().unwrap();
+            let x1 = x[1].parse::<i32>().unwrap();
+            let y1 = x[2].parse::<i32>().unwrap();
+            let x2 = x[3].parse::<i32>().unwrap();
+            let y2 = x[4].parse::<i32>().unwrap();
             
             Coord::new(x1, y1, x2, y2)
         
@@ -95,12 +122,22 @@ fn main() {
         .collect();
 
     part_one(input.clone());
+    part_two(input);
     
 }
 
 fn part_one(input: Vec<Coord>) {
+    println!("PART ONE");
     let mut sea_bed = VentMap::new();
 
-    input.iter().for_each(|c| sea_bed.add_fissure(c) );
+    input.iter().for_each(|c| sea_bed.add_fissure_one(c) );
+    sea_bed.print_result();
+}
+
+fn part_two(input: Vec<Coord>) {
+    println!("PART TWO");
+    let mut sea_bed = VentMap::new();
+
+    input.iter().for_each(|c| sea_bed.add_fissure_two(c) );
     sea_bed.print_result();
 }
