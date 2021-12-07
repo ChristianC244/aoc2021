@@ -19,15 +19,11 @@ fn main() {
 
     part_one(line.clone());
     part_two(line);
-    
 }
 
 fn fuel_calc(dist: i32) -> i32{
-    // dist should be dist +1; hence the formula below
     dist*(dist+1)/2
-
 }
-
 
 fn part_one(line: Vec<i32>) {
     println!("PART ONE");
@@ -67,6 +63,5 @@ fn part_two(line: Vec<i32>) {
     });
 
     println!("{}", fuel_cost.iter().min().unwrap());
-
 }
 
